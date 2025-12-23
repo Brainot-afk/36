@@ -2,7 +2,7 @@ import os
 
 products = [
     {"name": "Snack", "price": 10, "stock": 5},
-    {"name": "Soda", "price": 15, "stock": 3},
+    {"name": "Soda", "price": 15, "stock": 4},
     {"name": "Candy", "price": 5, "stock": 10}
 ]
 user_money = 50
@@ -34,6 +34,8 @@ def add_funds():
             print("⚠️ Số tiền nạp phải lớn hơn 0.")
     except ValueError:
         print("⚠️ Vui lòng nhập con số hợp lệ.")
+    
+    input("\nNhấn Enter để quay lại...") 
 
 def show_history():
     print("\n" + "="*10 + " LỊCH SỬ GIAO DỊCH " + "="*10)
@@ -42,11 +44,12 @@ def show_history():
     else:
         for idx, item in enumerate(reversed(history)): 
             print(f"{idx+1}. {item}")
-    print("=" * 41)
+    print("=" * 45)
     input("\nNhấn Enter để quay lại...")
 
 def admin_mode():
     global admin_password
+    clear_screen() 
     print("\n--- KHU VỰC QUẢN TRỊ ---")
     
     while True:
@@ -56,10 +59,11 @@ def admin_mode():
         else: print("❌ Mật khẩu sai! Vui lòng thử lại.")
 
     while True:
+        clear_screen() 
         print(f"\n--- ADMIN MENU (Pass: {admin_password}) ---")
         print("1. Nhập thêm hàng (Restock)")
         print("2. Thêm món mới vào Menu")
-        print("3. Xóa món khỏi Menu")       
+        print("3. Xóa món khỏi Menu")        
         print("4. Đổi mật khẩu Admin")
         print("5. Quay lại Menu chính")
         
@@ -77,6 +81,7 @@ def admin_mode():
                     else: print("⚠️ Số lượng phải dương.")
                 else: print("⚠️ Sản phẩm không tồn tại.")
             except ValueError: print("⚠️ Nhập sai định dạng.")
+            input("\nNhấn Enter để tiếp tục...") 
 
         elif choice == '2':
             name = input("Tên món mới: ")
@@ -86,6 +91,7 @@ def admin_mode():
                 products.append({"name": name, "price": price, "stock": stock})
                 print(f"✅ Đã thêm món '{name}' vào menu.")
             except ValueError: print("⚠️ Giá và số lượng phải là số.")
+            input("\nNhấn Enter để tiếp tục...")
 
         elif choice == '3':
             show_menu()
@@ -98,6 +104,7 @@ def admin_mode():
                     print("⚠️ STT không tồn tại.")
             except ValueError:
                 print("⚠️ Vui lòng nhập số.")
+            input("\nNhấn Enter để tiếp tục...") 
 
         elif choice == '4':
             new_pass = input("Nhập mật khẩu mới: ")
@@ -107,9 +114,12 @@ def admin_mode():
                     print("✅ Đổi mật khẩu thành công!")
                 else: print("❌ Xác nhận không khớp.")
             else: print("⚠️ Mật khẩu không được trống.")
+            input("\nNhấn Enter để tiếp tục...") 
 
         elif choice == '5': break
-        else: print("⚠️ Lựa chọn không hợp lệ.")
+        else: 
+            print("⚠️ Lựa chọn không hợp lệ.")
+            input("\nNhấn Enter...")
 
 def buy_product():
     global user_money
@@ -132,7 +142,10 @@ def buy_product():
         
         try:
             print("\n(Nhập '0' để THANH TOÁN, '-1' để XÓA giỏ hàng và thoát)")
-            choice = int(input(">>> Chọn STT sản phẩm muốn thêm vào giỏ: "))
+            choice_str = input(">>> Chọn STT sản phẩm muốn thêm vào giỏ: ")
+            
+            if not choice_str: continue 
+            choice = int(choice_str)
             
             if choice == -1: 
                 return 
@@ -153,21 +166,29 @@ def buy_product():
                 
                 if available_stock <= 0:
                     print("❌ Sản phẩm này đã hết hàng (hoặc bạn đã lấy hết trong giỏ).")
-                    input("Nhấn Enter...")
+                    input("Nhấn Enter...") 
                     continue
 
-                qty = int(input(f"Nhập số lượng {product['name']} (Còn {available_stock}): "))
+                try:
+                    qty = int(input(f"Nhập số lượng {product['name']} (Còn {available_stock}): "))
+                except ValueError:
+                    print("⚠️ Vui lòng nhập số.")
+                    input("Nhấn Enter...")
+                    continue
                 
                 if qty <= 0:
                     print("⚠️ Số lượng phải > 0")
+                    input("Nhấn Enter...")
                 elif qty > available_stock:
                     print(f"❌ Không đủ hàng! Chỉ còn {available_stock} cái.")
+                    input("Nhấn Enter...") 
                 else:
                     if p_idx in cart:
                         cart[p_idx] += qty
                     else:
                         cart[p_idx] = qty
                     print("✅ Đã thêm vào giỏ!")
+                    input("Nhấn Enter để tiếp tục mua...")
             else:
                 print("⚠️ STT không tồn tại.")
                 input("Nhấn Enter...")
